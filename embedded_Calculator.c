@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 #define STR_ADD "add" // Addition
 #define STR_SUB "sub" // Subtract
@@ -13,32 +14,33 @@
 #define STR_TMR "tmr" // Timer
 float operationCheck(char* input) {
     int a, b;
-    if (strcmp(input, STR_ADD)) {
+    if (strcmp(input, STR_ADD) == 0) {
         printf("\nEnter the two values to be added: ");
         scanf("%d %d", &a, &b);
-        // TODO: Output voltage to show input numbers on segment LEDs
+        // TODO: Output GPIO voltage pins to show input numbers on segment LEDs
 
         return ((float)a+b);
-    } else if (strcmp(input, STR_SUB)) {
+    } else if (strcmp(input, STR_SUB) == 0) {
         printf("\nEnter the two values to be subtracted: ");
         scanf("%d %d", &a, &b);
-        // TODO: Output voltage to show input numbers on segment LEDs
+        // TODO: Output GPIO voltage pins to show input numbers on segment LEDs
 
         return ((float)a-b);
-    } else if (strcmp(input, STR_MUL)) {
+    } else if (strcmp(input, STR_MUL) == 0) {
         printf("\nEnter the two values to be multiplied: ");
         scanf("%d %d", &a, &b);
-        // TODO: Output voltage to show input numbers on segment LEDs
+        // TODO: Output GPIO voltage pins to show input numbers on segment LEDs
 
         return ((float)a*b);
-    } else if (strcmp(input, STR_DIV)) {
+    } else if (strcmp(input, STR_DIV) == 0) {
         printf("\nEnter the two values to be divided: ");
         scanf("%d %d", &a, &b);
         if (b == 0) {
             printf("\n Second number cannot be divided by zero. Enter a new value for second number: ");
             scanf("%d", &b);
         }
-        // TODO: Output voltage to show input numbers on segment LEDs
+        // TODO: Output GPIO voltage pins to show input numbers on segment LEDs
+
         return ((float)a/b);
     } else {
         printf("\nInvalid operation.\n");
@@ -47,23 +49,37 @@ float operationCheck(char* input) {
 
 int main() {
     const char EXIT_STR[] = "No";
+    const char SPECIAL_STR[] = "adv";
     char response[3];
-    // List of functions
+
+    const char TIMER[] = "tmr";
 
     do {
+        // Clear GPIO display
+
         printf("Enter the calculation to be done: ");
         char inputMode[3];
         scanf("%s", inputMode);
-        // int mathOperation;
-        // scanf("%d", &mathOperation);
-        float temp = operationCheck(inputMode);
-        if(temp == (int)temp) {
-            printf("%d\n", (int)temp); // Prints as a integer value
+        if (strcmp(inputMode, SPECIAL_STR) == 0) {
+            printf("Enter the special operation (tmr, NULL, NULL): ");
+            scanf("%s", inputMode);
+            if(strcmp(inputMode, TIMER) == 0) {
+                printf("Enter the length of the timer: ");
+                int timeLength;
+                scanf("%d", &timeLength);
+                for (int i = timeLength; i >= 0; i--) {
+                    system("clear");
+                    printf("Timer: %d\n", timeLength);
+                }
+            }
         } else {
-            printf("%f\n", temp);
+            float temp = operationCheck(inputMode);
+            if(temp == (int)temp) {
+                printf("%d\n", (int)temp); // Prints as a integer value
+            } else {
+                printf("%f\n", temp);
+            }
         }
-        // printf("The result is: %d\n", operationCheck(mathOperation));
-        
         printf("Continue? (Yes: Save number | No: exit)\n");
         scanf("%3s", response);
 
