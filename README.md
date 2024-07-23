@@ -1,0 +1,1 @@
+Originally designed to run in Windows. Not all functions are compatible with Linux environment. A homemade design of a calculator taking advantage of the GPIO outputs of a microcontroller (e.g., Arduino, Raspberry Pi).
