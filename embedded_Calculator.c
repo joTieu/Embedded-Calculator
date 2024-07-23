@@ -5,6 +5,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <windows.h>
 
 #define STR_ADD "add" // Addition
 #define STR_SUB "sub" // Subtract
@@ -55,11 +56,12 @@ int main() {
     const char TIMER[] = "tmr";
 
     do {
-        // Clear GPIO display
+        // Clear GPIO display before handling any operations
 
         printf("Enter the calculation to be done: ");
         char inputMode[3];
         scanf("%s", inputMode);
+        // Non-mathematical operations (e.g., countdown timer)
         if (strcmp(inputMode, SPECIAL_STR) == 0) {
             printf("Enter the special operation (tmr, NULL, NULL): ");
             scanf("%s", inputMode);
@@ -68,12 +70,17 @@ int main() {
                 int timeLength;
                 scanf("%d", &timeLength);
                 for (int i = timeLength; i >= 0; i--) {
-                    system("clear");
-                    printf("Timer: %d\n", timeLength);
+                    system("cls");
+                    printf("Timer: %d\n", i);
+                    if (i == 0) {
+                        break;
+                    }
+                    Sleep(1000);
                 }
             }
         } else {
             float temp = operationCheck(inputMode);
+            // Checks if result can be truncated to integer (e.g., 2.0 -> 2)
             if(temp == (int)temp) {
                 printf("%d\n", (int)temp); // Prints as a integer value
             } else {
@@ -84,5 +91,6 @@ int main() {
         scanf("%3s", response);
 
     } while(strcmp(response, EXIT_STR));
+    printf("Program terminated.");
     return 0;
 }
