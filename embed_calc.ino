@@ -6,9 +6,9 @@
 const int decNumber = 12;
 const int numOfBits = floor(log(decNumber)/log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
 int bitArray[numOfBits];
-int dataPin = A0;
-int latchPin = A1;
-int clockPin = D12;
+const int dataPin = A0;
+const int latchPin = A1;
+const int clockPin = D12;
 
 int digitSegments[10] = {
   b1111110, // 0
