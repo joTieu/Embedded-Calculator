@@ -52,7 +52,7 @@ void setup() {
   pinMode(clockPin, OUTPUT); // Clock output
   // pinMode(11, INPUT); // Clock check
   digitalWrite(clockPin, LOW); // Initialize clock as LOW at start
-  digitalWrite(latchPin, HIGH); // Enables data to be received
+  // digitalWrite(latchPin, HIGH); // Enables data to be received
   decToBinary(decNumber);
 }
 
@@ -60,6 +60,21 @@ void loop() {
   for (int i = numOfBits - 1; i >= 0; i--) {
     // bitArray[0] will hold the most significant bit (left-most bit) of a binary number, and thus will be first 
     // to output to the LEDs via FIFO queue
+
+    if(decNumber/1000.0 > 0) {
+      digitalWrite(D3, HIGH); // Select digit 1 of 4-digit segment display
+      digitalWrite(); // Print serial bits of 1000s digit
+        // printf("Digit 4 is: %d\n", (int)(decNumber/1000));
+    }
+    // if(decNumber/100 > 0) {
+    //     printf("Digit 3 is: %d\n", (int)(decNumber % 1000) / 100);
+    // }
+    // if(floor(decNumber/10) > 0) {
+    //     printf("Digit 2 is: %d\n", (int)((decNumber % 100)/10));
+    // }
+    // if(floor(decNumber/1) > 0) {
+    //     printf("Digit 1 is: %d\n", (int)(decNumber % 100) % 10);
+    // }
 
     // Writes each binary bit into shift register on falling edge
     // (before loading onto next register) as a serial input. 
