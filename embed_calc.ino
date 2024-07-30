@@ -4,7 +4,7 @@
 #include <math.h>
 // Variables to declare
 const int decNumber = 12;
-const int numOfBits = floor(log(decNumber)/log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
+const int numOfBits = floor(log(decNumber) / log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
 int bitArray[numOfBits];
 const int dataPin = A0;
 const int latchPin = A1;
@@ -37,55 +37,70 @@ void decToBinary(int n)
 }
 
 void multiPin(int start, int end, int output) {
-  for (int i = start; i <= end; i++) {
-    digitalWrite(i, output);
-  }
+    for (int i = start; i <= end; i++) {
+        digitalWrite(i, output);
+    }
 }
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(dataPin, OUTPUT); // Serial Data Output
-  pinMode(latchPin, OUTPUT); // Latch pin for shift register
-  // pinMode(A2, OUTPUT);
-  // pinMode(A3, OUTPUT);
+    Serial.begin(9600);
+    pinMode(dataPin, OUTPUT); // Serial Data Output
+    pinMode(latchPin, OUTPUT); // Latch pin for shift register
+    // pinMode(A2, OUTPUT);
+    // pinMode(A3, OUTPUT);
 
-  pinMode(clockPin, OUTPUT); // Clock output
-  // pinMode(11, INPUT); // Clock check
-  digitalWrite(clockPin, LOW); // Initialize clock as LOW at start
-  digitalWrite(latchPin, HIGH); // Enables data to be received
-  decToBinary(decNumber);
+    pinMode(clockPin, OUTPUT); // Clock output
+    // pinMode(11, INPUT); // Clock check
+    digitalWrite(clockPin, LOW); // Initialize clock as LOW at start
+    // digitalWrite(latchPin, HIGH); // Enables data to be received
+    decToBinary(decNumber);
 }
 
-void loop() { 
-  for (int i = numOfBits - 1; i >= 0; i--) {
-    // bitArray[0] will hold the most significant bit (left-most bit) of a binary number, and thus will be first 
-    // to output to the LEDs via FIFO queue
+void loop() {
+    for (int i = numOfBits - 1; i >= 0; i--) {
+        // bitArray[0] will hold the most significant bit (left-most bit) of a binary number, and thus will be first 
+        // to output to the LEDs via FIFO queue
 
-    // Writes each binary bit into shift register on falling edge
-    // (before loading onto next register) as a serial input. 
-    // This is to ensure next register is loaded properly on CLK rising edge rather than pushing next bit on falling edge
-    digitalWrite(latchPin, HIGH);
-    shiftOut(dataPin, clockPin, LSBFIRST, decNumber);
+        if (decNumber / 1000.0 > 0) {
+            digitalWrite(D3, HIGH); // Select digit 1 of 4-digit segment display
+            digitalWrite(); // Print serial bits of 1000s digit
+            // printf("Digit 4 is: %d\n", (int)(decNumber/1000));
+        }
+        // if(decNumber/100 > 0) {
+        //     printf("Digit 3 is: %d\n", (int)(decNumber % 1000) / 100);
+        // }
+        // if(floor(decNumber/10) > 0) {
+        //     printf("Digit 2 is: %d\n", (int)((decNumber % 100)/10));
+        // }
+        // if(floor(decNumber/1) > 0) {
+        //     printf("Digit 1 is: %d\n", (int)(decNumber % 100) % 10);
+        // }
+
+        // Writes each binary bit into shift register on falling edge
+        // (before loading onto next register) as a serial input. 
+        // This is to ensure next register is loaded properly on CLK rising edge rather than pushing next bit on falling edge
+        digitalWrite(latchPin, HIGH);
+        shiftOut(dataPin, clockPin, LSBFIRST, decNumber);
+        digitalWrite(latchPin, LOW);
+        delay(2000);
+        // digitalWrite(12, LOW);
+        // digitalWrite(A0, bitArray[i]);  // Write bit to serial input when clock = 0
+        // delay(1000); // Wait 1s
+        // digitalWrite(12, HIGH);
+        // delay(1000);
+    }
     digitalWrite(latchPin, LOW);
-    delay(2000);
-    // digitalWrite(12, LOW);
-    // digitalWrite(A0, bitArray[i]);  // Write bit to serial input when clock = 0
-    // delay(1000); // Wait 1s
-    // digitalWrite(12, HIGH);
-    // delay(1000);
-  }
-  digitalWrite(latchPin, LOW);
-  // for(int j = 0; j < 3; j++){
-  //   for(int k = 0; k < 4; k++) {
-  //     digitalWrite(14 + k, HIGH);
-  //     delay(200);
-  //     digitalWrite(14+k, LOW);
-  //   }
-  // }
-  // for(int p = 0; p < 4; p++) {
-  //   multiPin(14,17,1);
-  //   delay(200);
-  //   multiPin(14,17,0);
-  //   delay(200);
-  // }
+    // for(int j = 0; j < 3; j++){
+    //   for(int k = 0; k < 4; k++) {
+    //     digitalWrite(14 + k, HIGH);
+    //     delay(200);
+    //     digitalWrite(14+k, LOW);
+    //   }
+    // }
+    // for(int p = 0; p < 4; p++) {
+    //   multiPin(14,17,1);
+    //   delay(200);
+    //   multiPin(14,17,0);
+    //   delay(200);
+    // }
 }
