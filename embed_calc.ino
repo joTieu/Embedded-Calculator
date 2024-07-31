@@ -1,7 +1,6 @@
-/*
-
-*/
+#include <max7219.h>
 #include <math.h>
+
 // Variables to declare
 const int decNumber = 12;
 const int numOfBits = floor(log(decNumber)/log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
@@ -10,8 +9,8 @@ const int dataPin = A0;
 // Read button inputs
 const int button = D5;
 const int num1 = A7;
-const
-const int loadPin = A1;
+// const
+const int loadPin = A2;
 const int clockPin = 12;
 
 const byte digitSegments[10] = {
