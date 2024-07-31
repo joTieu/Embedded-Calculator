@@ -7,7 +7,11 @@ const int decNumber = 12;
 const int numOfBits = floor(log(decNumber)/log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
 int bitArray[numOfBits];
 const int dataPin = A0;
-const int latchPin = A1;
+// Read button inputs
+const int button = D5;
+const int num1 = A7;
+const
+const int loadPin = A1;
 const int clockPin = 12;
 
 const byte digitSegments[10] = {
@@ -36,6 +40,8 @@ void setup() {
   // pinMode(A2, OUTPUT);
   // pinMode(A3, OUTPUT);
 
+  pinMode()
+
   pinMode(clockPin, OUTPUT); // Clock output
   // pinMode(11, INPUT); // Clock check
   digitalWrite(clockPin, LOW); // Initialize clock as LOW at start
@@ -50,66 +56,66 @@ void loop() {
     if(decNumber/1000.0 > 0) {
       // Select digit 1 of 4-digit segment display
       multiPin(3, 5, 0); // Output via D3, D4, and D5 to encoder
-      digitalWrite(latchPin, 1); // Enable latch of decoder & shift register
+      digitalWrite(loadPin, 0); // Keep low on load pin
       
       // Print serial bits of 1000s digit to SIPO shift register, then to resistor array
       switch((int)(decNumber/1000)) {
-        case 1: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin, clockPin, LSBFIRST, digitSegments[0]);
+        case 1: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[1]); break;
+        case 2: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[2]); break;
+        case 3: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[3]); break;
+        case 4: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[4]); break;
+        case 5: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[5]); break;
+        case 6: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[6]); break;
+        case 7: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[7]); break;
+        case 8: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[8]); break;
+        case 9: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[9]); break;
+        default: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[0]);
       }
         // printf("Digit 4 is: %d\n", (int)(decNumber/1000));
     }
     if(decNumber/100 > 0) {
         // printf("Digit 3 is: %d\n", (int)((decNumber % 1000) / 100));
       switch((int)((decNumber % 1000) / 100)) {
-        case 1: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+2, clockPin, LSBFIRST, digitSegments[0]);
+        case 1: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[1]); break;
+        case 2: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[2]); break;
+        case 3: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[3]); break;
+        case 4: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[4]); break;
+        case 5: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[5]); break;
+        case 6: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[6]); break;
+        case 7: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[7]); break;
+        case 8: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[8]); break;
+        case 9: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[9]); break;
+        default: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[0]);
       }
     }
     if(floor(decNumber/10) > 0) {
         // printf("Digit 2 is: %d\n", (int)((decNumber % 100)/10));
       switch((int)((decNumber % 100)/10)) {
-        case 1: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+3, clockPin, LSBFIRST, digitSegments[0]);
+        case 1: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[1]); break;
+        case 2: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[2]); break;
+        case 3: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[3]); break;
+        case 4: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[4]); break;
+        case 5: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[5]); break;
+        case 6: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[6]); break;
+        case 7: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[7]); break;
+        case 8: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[8]); break;
+        case 9: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[9]); break;
+        default: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[0]);
       }
     }
     if(floor(decNumber/1) > 0) {
         // printf("Digit 1 is: %d\n", (int)((decNumber % 100) % 10));
       switch((int)((decNumber % 100) % 10)) {
-        case 1: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+4, clockPin, LSBFIRST, digitSegments[0]);
+        case 1: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[1]); break;
+        case 2: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[2]); break;
+        case 3: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[3]); break;
+        case 4: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[4]); break;
+        case 5: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[5]); break;
+        case 6: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[6]); break;
+        case 7: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[7]); break;
+        case 8: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[8]); break;
+        case 9: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[9]); break;
+        default: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[0]);
       }
     }
 
@@ -118,7 +124,6 @@ void loop() {
     // This is to ensure next register is loaded properly on CLK rising edge rather than pushing next bit on falling edge
     //digitalWrite(latchPin, HIGH);
     //shiftOut(dataPin, clockPin, LSBFIRST, decNumber);
-    digitalWrite(latchPin, LOW);
     delay(500);
     // digitalWrite(12, LOW);
     // digitalWrite(A0, bitArray[i]);  // Write bit to serial input when clock = 0
@@ -126,7 +131,9 @@ void loop() {
     // digitalWrite(12, HIGH);
     // delay(1000);
   }
-  digitalWrite(latchPin, LOW); // Stops writing to shift register
+  digitalWrite(loadPin, 1); // Writes to shift register
+  delay(500);
+  digitalWrite(loadPin, 0); // Stops writing to shift register
   // for(int j = 0; j < 3; j++){
   //   for(int k = 0; k < 4; k++) {
   //     digitalWrite(14 + k, HIGH);
