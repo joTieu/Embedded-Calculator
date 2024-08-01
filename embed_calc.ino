@@ -1,30 +1,23 @@
 #include <max7219.h>
 #include <math.h>
 
-// Variables to declare
-const int decNumber = 12;
-const int numOfBits = floor(log(decNumber)/log(2)) + 1; // Grab the maximum number of bits required to represent the decimal number
-int bitArray[numOfBits];
-const int dataPin = A0;
-// Read button inputs
-const int button = D5;
-const int num1 = A7;
-// const
-const int loadPin = A2;
-const int clockPin = 12;
+// Delcared variables for driver 1
+#define DEC_NUMBER 12 // Will be replaced with digitalRead later to receive button inputs for numbers
+#define DATA_PIN1 14 // A0
+// D10 = clk
+// Delcared variables for driver 2
+#define DATA_PIN2 15 // A1
 
-const byte digitSegments[10] = {
-  B01111110, // 0
-  B00110000, // 1
-  B01101101, // 2
-  B01111001, // 3
-  B00110011,// 4
-  B01011011,// 5
-  B01011111,// 6
-  B01110000,// 7
-  B01111111,// 8
-  B01111011 // 9
-};
+// Read button inputs
+int button = 5; // Toggle timer switch
+int num1 = A7;
+
+// CLK pin reserved to D10
+// LOAD/CS pin reserved to D11
+// DIN pin reserved to D12
+#define loadPin 13
+int ctr = 0;
+MAX7219 max7219_1 = MAX7219(DATA_PIN1, MAX_CS, MAX_CLK);
 
 void multiPin(int start, int end, int output) {
   for (int i = start; i <= end; i++) {
@@ -32,118 +25,44 @@ void multiPin(int start, int end, int output) {
   }
 }
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(dataPin, OUTPUT); // Serial Data Output
-  pinMode(latchPin, OUTPUT); // Latch pin for shift register
-  // pinMode(A2, OUTPUT);
-  // pinMode(A3, OUTPUT);
-
-  pinMode()
-
-  pinMode(clockPin, OUTPUT); // Clock output
-  // pinMode(11, INPUT); // Clock check
-  digitalWrite(clockPin, LOW); // Initialize clock as LOW at start
-  // digitalWrite(latchPin, HIGH); // Enables data to be received
+// Creates a char array of digits from input number
+char* digitArray(int number, int ctr) {
+  int digit;
+  String numToString;
+  // Find out the number of digits to allocate array size
+  while (number >= 10) {
+    digit = number % 10;
+    number /= 10;
+    ctr++;
+  }
+  char digits[ctr];
+  numToString = String(number);
+  numToString.toCharArray(digits, numToString.length());
+  return digits;
 }
 
+void setup() {
+  Serial.begin(9600);
+  max7219_1.Begin();
+  pinMode(DATA_PIN1, OUTPUT); // Serial Data Output for set of 4 digits
+  digitalWrite(loadPin, HIGH); // Prepare to load data to display drivers
+  digitalWrite(A6, LOW);
+  digitalWrite(A5, LOW);
+}
+
+
+
 void loop() { 
-  for (int i = numOfBits - 1; i >= 0; i--) {
-    // bitArray[0] will hold the most significant bit (left-most bit) of a binary number, and thus will be first 
-    // to output to the LEDs via FIFO queue
+  // Read button presses to get input number
+  // TODO here
 
-    if(decNumber/1000.0 > 0) {
-      // Select digit 1 of 4-digit segment display
-      multiPin(3, 5, 0); // Output via D3, D4, and D5 to encoder
-      digitalWrite(loadPin, 0); // Keep low on load pin
-      
-      // Print serial bits of 1000s digit to SIPO shift register, then to resistor array
-      switch((int)(decNumber/1000)) {
-        case 1: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin, clockPin, MSBFIRST, digitSegments[0]);
-      }
-        // printf("Digit 4 is: %d\n", (int)(decNumber/1000));
-    }
-    if(decNumber/100 > 0) {
-        // printf("Digit 3 is: %d\n", (int)((decNumber % 1000) / 100));
-      switch((int)((decNumber % 1000) / 100)) {
-        case 1: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+2, clockPin, MSBFIRST, digitSegments[0]);
-      }
-    }
-    if(floor(decNumber/10) > 0) {
-        // printf("Digit 2 is: %d\n", (int)((decNumber % 100)/10));
-      switch((int)((decNumber % 100)/10)) {
-        case 1: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+3, clockPin, MSBFIRST, digitSegments[0]);
-      }
-    }
-    if(floor(decNumber/1) > 0) {
-        // printf("Digit 1 is: %d\n", (int)((decNumber % 100) % 10));
-      switch((int)((decNumber % 100) % 10)) {
-        case 1: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[1]); break;
-        case 2: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[2]); break;
-        case 3: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[3]); break;
-        case 4: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[4]); break;
-        case 5: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[5]); break;
-        case 6: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[6]); break;
-        case 7: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[7]); break;
-        case 8: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[8]); break;
-        case 9: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[9]); break;
-        default: shiftOut(dataPin+4, clockPin, MSBFIRST, digitSegments[0]);
-      }
-    }
 
-    // Writes each binary bit into shift register on falling edge
-    // (before loading onto next register) as a serial input. 
-    // This is to ensure next register is loaded properly on CLK rising edge rather than pushing next bit on falling edge
-    //digitalWrite(latchPin, HIGH);
-    //shiftOut(dataPin, clockPin, LSBFIRST, decNumber);
-    delay(500);
-    // digitalWrite(12, LOW);
-    // digitalWrite(A0, bitArray[i]);  // Write bit to serial input when clock = 0
-    // delay(1000); // Wait 1s
-    // digitalWrite(12, HIGH);
-    // delay(1000);
-  }
-  digitalWrite(loadPin, 1); // Writes to shift register
-  delay(500);
-  digitalWrite(loadPin, 0); // Stops writing to shift register
-  // for(int j = 0; j < 3; j++){
-  //   for(int k = 0; k < 4; k++) {
-  //     digitalWrite(14 + k, HIGH);
-  //     delay(200);
-  //     digitalWrite(14+k, LOW);
-  //   }
-  // }
-  // for(int p = 0; p < 4; p++) {
-  //   multiPin(14,17,1);
-  //   delay(200);
-  //   multiPin(14,17,0);
-  //   delay(200);
-  // }
+  digitalWrite(loadPin, LOW); // Writes to shift register
+  digitalWrite(A6, HIGH);
+  max7219_1.DisplayText(digitArray(DEC_NUMBER, ctr), 1); // Displays all digits of input number
+  delay(100);
+  digitalWrite(loadPin, HIGH); // Stops writing to shift register to latch data to registers
+  digitalWrite(A6, LOW);
+
+  //
 }
